@@ -44,31 +44,29 @@ class KakaoAuthService {
       },
     });
 
-    return data;
+    let isUser = await this.kakaoauthRepository.checkIsUser(data.id);
 
-    // let isUser = await this.kakaoauthRepository.checkIsUser(data.id);
+    let token = '';
+    if (isUser && isUser.state1) {
+      token = jwt.sign({ userId: isUser.userId, userName: isUser.userName }, JWT_SECRET_KEY, {
+        expiresIn: '2h',
+      });
+    }
 
-    // let token = '';
-    // if (isUser && isUser.state1) {
-    //   token = jwt.sign({ userId: isUser.userId, userName: isUser.userName }, JWT_SECRET_KEY, {
-    //     expiresIn: '2h',
-    //   });
-    // }
+    if (!isUser) {
+      isUser = await this.kakaoauthRepository.registerUser(
+        data.id,
+        data.properties.nickname,
+        data.properties.profile_image
+      );
+    }
 
-    // if (!isUser) {
-    //   isUser = await this.kakaoauthRepository.registerUser(
-    //     data.id,
-    //     data.properties.nickname,
-    //     data.properties.profile_image
-    //   );
-    // }
-
-    // return {
-    //   userid: isUser.userId,
-    //   userName: isUser.userName,
-    //   profileImage: isUser.userImage,
-    //   token,
-    // };
+    return {
+      userid: isUser.userId,
+      userName: isUser.userName,
+      profileImage: isUser.userImage,
+      token,
+    };
   };
 
   public kakaoState = async (state1: string, state2: string, userId: number) => {
