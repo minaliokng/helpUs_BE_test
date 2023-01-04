@@ -26,47 +26,49 @@ class KakaoAuthService {
     };
     const params = new URLSearchParams(config).toString();
 
-    const result = await axios({
-      method: 'post',
-      url: `https://kauth.kakao.com/oauth/token?${params}`,
-      headers: {
-        'Content-type': 'application/json',
-      },
-    }).then((response) => {
-      return response.data;
-    });
+    return params;
 
-    const { data } = await axios({
-      method: 'get',
-      url: `https://kapi.kakao.com/v2/user/me`,
-      headers: {
-        Authorization: `Bearer ${result.access_token}`,
-      },
-    });
+    // const result = await axios({
+    //   method: 'post',
+    //   url: `https://kauth.kakao.com/oauth/token?${params}`,
+    //   headers: {
+    //     'Content-type': 'application/json',
+    //   },
+    // }).then((response) => {
+    //   return response.data;
+    // });
 
-    let isUser = await this.kakaoauthRepository.checkIsUser(data.id);
+    // const { data } = await axios({
+    //   method: 'get',
+    //   url: `https://kapi.kakao.com/v2/user/me`,
+    //   headers: {
+    //     Authorization: `Bearer ${result.access_token}`,
+    //   },
+    // });
 
-    let token = '';
-    if (isUser && isUser.state1) {
-      token = jwt.sign({ userId: isUser.userId, userName: isUser.userName }, JWT_SECRET_KEY, {
-        expiresIn: '2h',
-      });
-    }
+    // let isUser = await this.kakaoauthRepository.checkIsUser(data.id);
 
-    if (!isUser) {
-      isUser = await this.kakaoauthRepository.registerUser(
-        data.id,
-        data.properties.nickname,
-        data.properties.profile_image
-      );
-    }
+    // let token = '';
+    // if (isUser && isUser.state1) {
+    //   token = jwt.sign({ userId: isUser.userId, userName: isUser.userName }, JWT_SECRET_KEY, {
+    //     expiresIn: '2h',
+    //   });
+    // }
 
-    return {
-      userid: isUser.userId,
-      userName: isUser.userName,
-      profileImage: isUser.userImage,
-      token,
-    };
+    // if (!isUser) {
+    //   isUser = await this.kakaoauthRepository.registerUser(
+    //     data.id,
+    //     data.properties.nickname,
+    //     data.properties.profile_image
+    //   );
+    // }
+
+    // return {
+    //   userid: isUser.userId,
+    //   userName: isUser.userName,
+    //   profileImage: isUser.userImage,
+    //   token,
+    // };
   };
 
   public kakaoState = async (state1: string, state2: string, userId: number) => {
