@@ -26,17 +26,17 @@ class KakaoAuthService {
     };
     const params = new URLSearchParams(config).toString();
 
-    return params;
+    const result = await axios({
+      method: 'post',
+      url: `https://kauth.kakao.com/oauth/token?${params}`,
+      headers: {
+        'Content-type': 'application/json',
+      },
+    }).then((response) => {
+      return response.data;
+    });
 
-    // const result = await axios({
-    //   method: 'post',
-    //   url: `https://kauth.kakao.com/oauth/token?${params}`,
-    //   headers: {
-    //     'Content-type': 'application/json',
-    //   },
-    // }).then((response) => {
-    //   return response.data;
-    // });
+    return result;
 
     // const { data } = await axios({
     //   method: 'get',
