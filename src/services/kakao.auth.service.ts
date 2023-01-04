@@ -36,15 +36,15 @@ class KakaoAuthService {
       return response.data;
     });
 
-    return result;
+    const { data } = await axios({
+      method: 'get',
+      url: `https://kapi.kakao.com/v2/user/me`,
+      headers: {
+        Authorization: `Bearer ${result.access_token}`,
+      },
+    });
 
-    // const { data } = await axios({
-    //   method: 'get',
-    //   url: `https://kapi.kakao.com/v2/user/me`,
-    //   headers: {
-    //     Authorization: `Bearer ${result.access_token}`,
-    //   },
-    // });
+    return data;
 
     // let isUser = await this.kakaoauthRepository.checkIsUser(data.id);
 
